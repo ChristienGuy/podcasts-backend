@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 
 const expressSession = require('express-session')({
   secret: process.env.SESSION_SECRET,
@@ -23,9 +22,10 @@ const index = require('./routes/index');
 const api = require('./routes/api/index');
 const users = require('./routes/api/users');
 const authentication = require('./routes/api/authentication');
+const podcast = require('./routes/api/podcast');
 
 const app = express();
-mongoose.connect('mongodb://localhost/podcasts-app');
+mongoose.connect(process.env.MONGO_DB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -47,7 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport config
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -59,6 +59,7 @@ app.use('/users', users);
 app.use('/api', api);
 app.use('/api/users', users);
 app.use('/api/authentication', authentication);
+app.use('/api/podcast', podcast);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

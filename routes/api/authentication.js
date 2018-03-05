@@ -8,12 +8,10 @@ const router = express.Router();
 
 router.post('/register', (req, res) => {
   const {
-    username, firstName, lastName, email,
+    name, email,
   } = req.body;
   const newUser = new User({
-    username,
-    firstName,
-    lastName,
+    name,
     email,
   });
 
@@ -26,14 +24,6 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const foundUser = await User.findOne({
-    email: req.body.email,
-  }).exec();
-
-  if (foundUser) {
-    req.body.username = foundUser.username;
-  }
-
   passport.authenticate('local')(req, res, () => {
     if (req.user) {
       return res.send(JSON.stringify(req.user));
@@ -50,6 +40,7 @@ router.get('/checksession', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
+  req.session.destroy();
   req.logout();
   return res.send(JSON.stringify(req.user));
 });

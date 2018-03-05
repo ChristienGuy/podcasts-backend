@@ -3,25 +3,16 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const Episode = new Schema({
-  title: String,
-  lastPlayedPosition: Number,
-});
-
-const Podcast = new Schema({
-  title: String,
-  episodes: [Episode],
-});
-
+const Podcast = require('./podcast');
 
 const User = new Schema({
-  username: String,
-  firstName: String,
-  lastName: String,
+  name: String,
   email: String,
-  podcasts: [Podcast],
+  podcasts: [Podcast.schema],
 });
 
-User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose, {
+  usernameField: 'email',
+});
 
 module.exports = mongoose.model('User', User);

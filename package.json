@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
@@ -23,7 +24,8 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^5.0.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "eslint": "^4.18.2",
