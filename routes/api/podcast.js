@@ -17,18 +17,27 @@ function getEpisodes(episodeData) {
       'itunes:image': image,
       description,
       'itunes:duration': duration,
-      link,
+      enclosure,
     } = episode;
+
+    // if (!title || !pubDate || !image || !description || !duration || !enclosure) {
+    //   debugger;
+    // }
 
     return {
       title: title[0],
       pubDate: pubDate[0],
-      image: image[0].$,
+      imageUrl: image ? image[0].$.href : '',
       description: description[0],
       duration: duration ? duration[0] : '',
-      link: link[0],
+      enclosure: enclosure ? {
+        url: enclosure[0].$.url,
+        type: enclosure[0].$.type,
+        length: enclosure[0].$.length,
+      } : {},
     };
   });
+
   return episodes;
 }
 
@@ -42,7 +51,7 @@ async function getPodcast(rssUrl) {
       parseString(res.data, (err, result) => {
         const {
           title,
-          image,
+          'itunes:image': image,
           link: webLink,
           'atom:link': rssLink,
           item: episodes,
@@ -50,11 +59,7 @@ async function getPodcast(rssUrl) {
 
         podcast = {
           title: title[0],
-          image: {
-            url: image[0].url[0],
-            title: image[0].title[0],
-            link: image[0].link[0],
-          },
+          imageUrl: image[0].$.href,
           webUrl: webLink[0],
           rssUrl: rssLink[0].$.href,
           episodes: getEpisodes(episodes),

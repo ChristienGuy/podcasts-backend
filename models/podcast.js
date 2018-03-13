@@ -5,16 +5,16 @@ const { Schema } = mongoose;
 const Episode = new Schema({
   title: String,
   pubDate: Date,
-  image: Object,
+  imageUrl: String,
   description: String,
   duration: String,
-  link: String,
+  enclosure: Object,
   // lastPlayedPosition: Number,
 });
 
 const Podcast = new Schema({
   title: String,
-  image: Object,
+  imageUrl: String,
   webUrl: String,
   rssUrl: String,
   episodes: [Episode],
