@@ -5,14 +5,13 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
 const mongoose = require('mongoose');
 const passport = require('passport');
 
-const expressSession = require('express-session')({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-});
+mongoose.connect(process.env.MONGO_DB_URL);
+
 
 // Model imports
 const User = require('./models/user');
@@ -25,7 +24,7 @@ const authentication = require('./routes/api/authentication');
 const podcast = require('./routes/api/podcast');
 
 const app = express();
-mongoose.connect(process.env.MONGO_DB_URL);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,7 +40,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(expressSession);
+app.use(expressSession({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+  }),
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
